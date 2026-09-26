@@ -1,19 +1,24 @@
 package com.kajal.urlshortener.service;
 
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Service;
+
 import com.kajal.urlshortener.model.UrlMapping;
 import com.kajal.urlshortener.repository.UrlMappingRepository;
 import com.kajal.urlshortener.util.Base62;
-import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class UrlService {
 
     private final UrlMappingRepository repository;
+    private final RedisTemplate<String, String> redisTemplate;
 
-    public UrlService(UrlMappingRepository repository) {
+    public UrlService(UrlMappingRepository repository, RedisTemplate<String, String> redisTemplate) {
         this.repository = repository;
+        this.redisTemplate = redisTemplate;
     }
 
     public String create(String longUrl) {
@@ -33,6 +38,8 @@ public class UrlService {
         mapping.setShortCode(code);
         repository.save(mapping);
 
+        redisTemplate.opsForValue().set(code, longUrl, 1, TimeUnit.HOURS);
+
         return code;
     }
 
@@ -40,6 +47,17 @@ public class UrlService {
         if (code == null) {
             return Optional.empty();
         }
-        return repository.findByShortCode(code).map(UrlMapping::getLongUrl);
+
+        String cached = redisTemplate.opsForValue().get(code);
+        if (cached != null) {
+            System.out.println("CACHE HIT for code: " + code);
+            return Optional.of(cached);
+        }
+
+        System.out.println("CACHE MISS for code: " + code);
+        Optional<UrlMapping> mapping = repository.findByShortCode(code);
+        mapping.ifPresent(m -> redisTemplate.opsForValue().set(code, m.getLongUrl(), 1, TimeUnit.HOURS));
+
+        return mapping.map(UrlMapping::getLongUrl);
     }
 }
