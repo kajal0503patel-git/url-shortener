@@ -38,7 +38,7 @@ public class UrlService {
         mapping.setShortCode(code);
         repository.save(mapping);
 
-        redisTemplate.opsForValue().set(code, longUrl, 1, TimeUnit.HOURS);
+        cacheSafely(code, longUrl);
 
         return code;
     }
@@ -48,7 +48,7 @@ public class UrlService {
             return Optional.empty();
         }
 
-        String cached = redisTemplate.opsForValue().get(code);
+        String cached = getFromCacheSafely(code);
         if (cached != null) {
             System.out.println("CACHE HIT for code: " + code);
             return Optional.of(cached);
@@ -56,8 +56,25 @@ public class UrlService {
 
         System.out.println("CACHE MISS for code: " + code);
         Optional<UrlMapping> mapping = repository.findByShortCode(code);
-        mapping.ifPresent(m -> redisTemplate.opsForValue().set(code, m.getLongUrl(), 1, TimeUnit.HOURS));
+        mapping.ifPresent(m -> cacheSafely(code, m.getLongUrl()));
 
         return mapping.map(UrlMapping::getLongUrl);
+    }
+
+    private void cacheSafely(String code, String longUrl) {
+        try {
+            redisTemplate.opsForValue().set(code, longUrl, 1, TimeUnit.HOURS);
+        } catch (Exception e) {
+            System.out.println("Redis unavailable, skipping cache write: " + e.getMessage());
+        }
+    }
+
+    private String getFromCacheSafely(String code) {
+        try {
+            return redisTemplate.opsForValue().get(code);
+        } catch (Exception e) {
+            System.out.println("Redis unavailable, falling back to database: " + e.getMessage());
+            return null;
+        }
     }
 }
