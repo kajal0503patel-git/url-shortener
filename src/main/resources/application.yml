@@ -8,3 +8,7 @@ spring:
       ddl-auto: validate
   flyway:
     enabled: true
+  data:
+    redis:
+      host: localhost
+      port: 6379
