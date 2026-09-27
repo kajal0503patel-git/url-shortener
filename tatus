@@ -1,0 +1,9 @@
+[33m17ad49d[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m Add Redis fallback so app stays up if cache is unavailable
+[33mc6950e7[m Add Redis caching to UrlService (cache-aside pattern)
+[33mb2c1ac6[m Add Redis configuration to application.yml
+[33mf2eae2d[m Add Redis dependency to pom.xml
+[33me1eb18f[m Add create and redirect endpoints, connect UrlService to database
+[33mbc24343[m Connect UrlService to MySQL via JPA, add UrlMapping table
+[33mcc1eee2[m Add MySQL service to docker-compose
+[33m6b7774e[m Add input validation and concurrency tests to UrlService
+[33m3c99231[m Add Base62 encoder with unit tests
