@@ -43,10 +43,8 @@ Client -> Controller (UrlController / RedirectController) -> UrlService -> Redis
 
 1. Clone the repo
 2. Copy .env.example to .env and fill in your own values
-3. Start MySQL and Redis: docker compose up -d
-4. Set environment variables and run the app:
-   DB_USER and DB_PASSWORD must be set before running spring-boot:run
-5. The app runs on http://localhost:8080
+3. Run the whole stack (app, MySQL, Redis) with one command: docker compose up -d --build
+4. The app runs on http://localhost:8080
 
 ## API Endpoints
 
@@ -74,3 +72,4 @@ Covers Base62 encoding, including concurrency safety, with JUnit 5.
 - API documentation via Swagger/OpenAPI
 - Deploy to a live URL
 - Load testing with k6
+
