@@ -32,7 +32,12 @@ public class UrlController {
         }
 
         String code = service.create(request.longUrl());
-        String shortUrl = "http://localhost:8080/" + code;
+        String baseUrl = httpRequest.getScheme() + "://" + httpRequest.getServerName();
+        int port = httpRequest.getServerPort();
+        if (port != 80 && port != 443) {
+            baseUrl += ":" + port;
+        }
+        String shortUrl = baseUrl + "/" + code;
         return ResponseEntity.ok(new CreateUrlResponse(code, shortUrl));
     }
 }
