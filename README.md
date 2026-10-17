@@ -1,5 +1,7 @@
 # URL Shortener
 
+**Live demo:** https://url-shortener-production-11d7.up.railway.app
+
 A backend service that converts long URLs into short, shareable codes and redirects users to the original URL. Built to practice production-style backend patterns: caching, graceful degradation, and layered architecture.
 
 ## Features
@@ -67,9 +69,9 @@ Covers Base62 encoding, including concurrency safety, with JUnit 5.
 
 ## Future Improvements
 
-- Rate limiting on the create endpoint
 - Click analytics (async, so redirects stay fast)
 - API documentation via Swagger/OpenAPI
-- Deploy to a live URL
 - Load testing with k6
+
+
 
