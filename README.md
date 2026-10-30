@@ -2,7 +2,7 @@
 
 A production-style, high-performance backend service that converts long URLs into short, shareable codes and redirects users safely. Engineered to demonstrate advanced production patterns: high-throughput caching, graceful degradation, and rate-limiting.
 
-🚀 **Live Demo:** [View Live Deployment](https://url-shortener-production-11d7.up.railway.app)
+🚀 **Live Demo:** [View Live Deployment](https://railway.app)
 
 ---
 
